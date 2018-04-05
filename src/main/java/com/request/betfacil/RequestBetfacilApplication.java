@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 
 import com.request.betfacil.service.RequestBetfacilService;
 import com.request.betfacil.util.RequestUtils;
@@ -18,15 +19,15 @@ public class RequestBetfacilApplication {
 		SpringApplication.run(RequestBetfacilApplication.class, args);
 	}
 	
-	 @Bean
-	    CommandLineRunner lookup(RequestBetfacilService service) {
-	        return args -> {
-	            
-	            try {
-	            	service.testRequestBetFacilRemote();
-	            } catch (RuntimeException e) {
-	                LOGGER.error(e.getMessage(), e);
-	            }
-	        };
-	    }
+	@Bean
+    CommandLineRunner lookup(RequestBetfacilService service) {
+        return args -> {
+            
+            try {
+            	service.testRequestBetFacilRemote();
+            } catch (RuntimeException e) {
+                LOGGER.error(e.getMessage(), e);
+            }
+        };
+    }
 }

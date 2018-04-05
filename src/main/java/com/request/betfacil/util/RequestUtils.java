@@ -16,12 +16,11 @@ public final class RequestUtils {
 
 	    private final Logger logger = LogManager.getLogger(RequestUtils.class);
 
-	    @Autowired
-	    private RestTemplate restTemplate;
+	    private RestTemplate restTemplate = new RestTemplate();
 
-	    private static final String HOST = "";
+	    private static final String HOST = "http://localhost";
 
-	    private static final String PORT = "8080";
+	    private static final String PORT = "8443";
 
 	    @PostConstruct
 	    public void init(){
@@ -36,7 +35,7 @@ public final class RequestUtils {
 	        Proxy proxy = new Proxy(Proxy.Type.HTTP,address);
 	        factory.setProxy(proxy);
 
-	        restTemplate.setRequestFactory(factory);
+	        //restTemplate.setRequestFactory(factory);
 	    }
 
 	    public RestTemplate getRestTemplate() {
