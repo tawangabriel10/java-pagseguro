@@ -1,4 +1,4 @@
-package com.request.betfacil.util;
+package br.com.java.pagseguro.util;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
