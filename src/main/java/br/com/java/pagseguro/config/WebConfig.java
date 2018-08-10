@@ -17,8 +17,8 @@ import br.com.uol.pagseguro.api.utils.logging.SimpleLoggerFactory;
 @EnableWebMvc
 public class WebConfig {
 	
-	private final static String sellerEmail = "your_seller_email";
-    private final static String sellerToken = "your_seller_token";
+	private final static String sellerEmail = "tawan.gabriel10@gmail.com";
+    private final static String sellerToken = "ACE7A350820D4B4997F0E33526D2B34A";
 	
 	@Bean
 	public PagSeguro getPagSeguro() {

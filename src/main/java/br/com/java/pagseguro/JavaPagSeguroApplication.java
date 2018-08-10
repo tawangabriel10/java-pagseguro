@@ -1,4 +1,4 @@
-package com.request.betfacil;
+package br.com.java.pagseguro;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -7,24 +7,24 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import com.request.betfacil.service.RequestBetfacilService;
-import com.request.betfacil.util.RequestUtils;
+import br.com.java.pagseguro.domain.PagamentoDTO;
+import br.com.java.pagseguro.service.PagamentoService;
 
 @SpringBootApplication
-public class RequestBetfacilApplication {
+public class JavaPagSeguroApplication {
 	
-	private final Logger LOGGER = LogManager.getLogger(RequestBetfacilApplication.class);
+	private final Logger LOGGER = LogManager.getLogger(JavaPagSeguroApplication.class);
 
 	public static void main(String[] args) {
-		SpringApplication.run(RequestBetfacilApplication.class, args);
+		SpringApplication.run(JavaPagSeguroApplication.class, args);
 	}
 	
 	@Bean
-    CommandLineRunner lookup(RequestBetfacilService service) {
+    CommandLineRunner lookup(PagamentoService service) {
         return args -> {
             
             try {
-            	service.testRequestBetFacilRemote();
+            	service.checkoutRegister(new PagamentoDTO());
             } catch (RuntimeException e) {
                 LOGGER.error(e.getMessage(), e);
             }

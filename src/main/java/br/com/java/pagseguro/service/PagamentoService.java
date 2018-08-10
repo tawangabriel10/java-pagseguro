@@ -1,6 +1,7 @@
 package br.com.java.pagseguro.service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -10,6 +11,9 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 
+import br.com.java.pagseguro.domain.PagamentoDTO;
+import br.com.java.pagseguro.domain.ProdutoDTO;
+import br.com.java.pagseguro.domain.RemetenteDTO;
 import br.com.uol.pagseguro.api.PagSeguro;
 import br.com.uol.pagseguro.api.PagSeguroEnv;
 import br.com.uol.pagseguro.api.checkout.CheckoutRegistrationBuilder;
@@ -27,6 +31,7 @@ import br.com.uol.pagseguro.api.common.domain.builder.ShippingBuilder;
 import br.com.uol.pagseguro.api.common.domain.enums.ConfigKey;
 import br.com.uol.pagseguro.api.common.domain.enums.Currency;
 import br.com.uol.pagseguro.api.common.domain.enums.PaymentMethodGroup;
+import br.com.uol.pagseguro.api.common.domain.enums.PaymentMethodName;
 import br.com.uol.pagseguro.api.common.domain.enums.State;
 import br.com.uol.pagseguro.api.credential.Credential;
 import br.com.uol.pagseguro.api.http.JSEHttpClient;
@@ -38,51 +43,47 @@ public class PagamentoService {
 	@Autowired
 	private PagSeguro pagSeguro;
 	
-
-	public void checkoutRegister() {
+	public void checkoutRegister(PagamentoDTO pagamento) {
 
         try {
 
             //Criando um checkout
-            RegisteredCheckout registeredCheckout = pagSeguro.checkouts().register(
-                new CheckoutRegistrationBuilder()
-                    .withCurrency(Currency.BRL)
-                    .withExtraAmount(BigDecimal.ONE)
-                    .withReference("XXXXXX")
+            
+        	CheckoutRegistrationBuilder checkoutRegisterBuilder = new CheckoutRegistrationBuilder()
+                    .withCurrency(pagamento.getMoeda())
+                    .withExtraAmount(pagamento.getPrecoExtra())
+                    .withReference(pagamento.getReferencia())
                     .withSender(new SenderBuilder()
-                        .withEmail("comprador@uol.com.br")
-                        .withName("Jose Comprador")
-                        .withCPF("99999999999")
+                        .withEmail(pagamento.getRemetente().getEmail())
+                        .withName(pagamento.getRemetente().getNome())
+                        .withCPF(pagamento.getRemetente().getCpf())
                         .withPhone(new PhoneBuilder()
-                            .withAreaCode("99")
-                            .withNumber("99999999")))
+                            .withAreaCode(pagamento.getRemetente().getTelefone().getCodigoArea())
+                            .withNumber(pagamento.getRemetente().getTelefone().getNumero())))
                     .withShipping(new ShippingBuilder()
-                        .withType(ShippingType.Type.SEDEX)
-                        .withCost(BigDecimal.TEN)
+                        .withType(pagamento.getRemessa().getTipo())
+                        .withCost(pagamento.getRemessa().getCusto())
                         .withAddress(new AddressBuilder()
-                            .withPostalCode("99999999")
-                            .withCountry("BRA")
-                            .withState(State.SP)
-                            .withCity("Cidade Exemplo")
-                            .withComplement("99o andar")
-                            .withDistrict("Jardim Internet")
-                            .withNumber("9999")
-                            .withStreet("Av. PagSeguro")))
+                            .withPostalCode(pagamento.getRemessa().getEndereco().getCodigoPostal())
+                            .withCountry(pagamento.getRemessa().getEndereco().getPais())
+                            .withState(pagamento.getRemessa().getEndereco().getEstado())
+                            .withCity(pagamento.getRemessa().getEndereco().getCidade())
+                            .withComplement(pagamento.getRemessa().getEndereco().getComplemento())
+                            .withDistrict(pagamento.getRemessa().getEndereco().getDistrito())
+                            .withNumber(pagamento.getRemessa().getEndereco().getNumero())
+                            .withStreet(pagamento.getRemessa().getEndereco().getRua())));
 
-                    .addItem(new PaymentItemBuilder()
-                        .withId("0001")
-                        .withDescription("Produto PagSeguroI")
-                        .withAmount(new BigDecimal(99999.99))
-                        .withQuantity(1)
-                        .withWeight(1000))
-
-                    .addItem(new PaymentItemBuilder()
-                        .withId("0002")
-                        .withDescription("Produto PagSeguroII")
-                        .withAmount(new BigDecimal(99999.98))
-                        .withQuantity(2)
-                        .withWeight(750)
-                    )
+        	List<ProdutoDTO> produtos = pagamento.getProdutos();
+        	
+        	produtos.forEach(p -> {
+        		checkoutRegisterBuilder.addItem(new PaymentItemBuilder()
+                        .withId(p.getId().toString())
+                        .withDescription(p.getDescricao())
+                        .withAmount(p.getPreco())
+                        .withQuantity(p.getQuantidade())
+                        .withWeight(p.getPeso()));
+        	});
+                    
 
                     //Para definir o a inclusão ou exclusão de um meio você deverá utilizar três parâmetros: o parâmetro que define a configuração do grupo,
                     // o grupo de meios de pagamento e o nome do meio de pagamento.
@@ -95,7 +96,7 @@ public class PagamentoService {
                     // - Não é possível excluir um grupo e um meio do mesmo grupo (Ex.: excluir grupo cartão e bandeira visa na mesma chamada);
                     // - Não é possível incluir e excluir o mesmo meio de pagamento (Ex.: incluir e excluir a bandeira VISA).
 
-                    .withAcceptedPaymentMethods(new AcceptedPaymentMethodsBuilder()
+        	checkoutRegisterBuilder.withAcceptedPaymentMethods(new AcceptedPaymentMethodsBuilder()
                         .addInclude(new PaymentMethodBuilder()
                             .withGroup(PaymentMethodGroup.BALANCE)
                         )
@@ -147,13 +148,15 @@ public class PagamentoService {
                             .withKey(ConfigKey.MAX_INSTALLMENTS_NO_INTEREST)
                             .withValue(new BigDecimal(5))
                         )
-                    )
-            );
+                    );
+                    
+            RegisteredCheckout registeredCheckout = pagSeguro.checkouts().register(checkoutRegisterBuilder);
             System.out.println(registeredCheckout.getRedirectURL());
 
         }catch (Exception e){
             e.printStackTrace();
         }
 	}
+	
 
 }
