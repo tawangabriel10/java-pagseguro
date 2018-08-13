@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import br.com.java.pagseguro.domain.PagamentoDTO;
-import br.com.java.pagseguro.service.PagamentoService;
+import br.com.java.pagseguro.service.CheckoutService;
 
 @SpringBootApplication
 public class JavaPagSeguroApplication {
@@ -20,7 +20,7 @@ public class JavaPagSeguroApplication {
 	}
 	
 	@Bean
-    CommandLineRunner lookup(PagamentoService service) {
+    CommandLineRunner lookup(CheckoutService service) {
         return args -> {
             
             try {

@@ -3,6 +3,7 @@ package br.com.java.pagseguro.service;
 import java.math.BigDecimal;
 import java.util.List;
 
+import br.com.java.pagseguro.util.exception.TransacaoAbortadaException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -38,12 +39,12 @@ import br.com.uol.pagseguro.api.http.JSEHttpClient;
 import br.com.uol.pagseguro.api.utils.logging.SimpleLoggerFactory;
 
 @Service
-public class PagamentoService {
+public class CheckoutService {
 	
 	@Autowired
 	private PagSeguro pagSeguro;
 	
-	public void checkoutRegister(PagamentoDTO pagamento) {
+	public void checkoutRegister(PagamentoDTO pagamento) throws TransacaoAbortadaException {
 
         try {
 
@@ -155,6 +156,7 @@ public class PagamentoService {
 
         }catch (Exception e){
             e.printStackTrace();
+            throw new TransacaoAbortadaException(e.getMessage(), e.getCause());
         }
 	}
 	
