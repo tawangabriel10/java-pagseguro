@@ -8,8 +8,8 @@ public class ProdutoDTO implements Serializable{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	
+	private static final long serialVersionUID = 5705849221618687589L;
+
 	private Long id;
 	
 	private String descricao;

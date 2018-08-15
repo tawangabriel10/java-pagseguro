@@ -26,6 +26,8 @@ public class PagamentoDTO implements Serializable{
 	private RemessaDTO remessa;
 	
 	private List<ProdutoDTO> produtos;
+	
+	private CartaoCreditoDTO cartaoCredito;
 
 	public Long getId() {
 		return id;
@@ -82,6 +84,13 @@ public class PagamentoDTO implements Serializable{
 	public void setProdutos(List<ProdutoDTO> produtos) {
 		this.produtos = produtos;
 	}
-	
 
+	public CartaoCreditoDTO getCartaoCredito() {
+		return cartaoCredito;
+	}
+
+	public void setCartaoCredito(CartaoCreditoDTO cartaoCredito) {
+		this.cartaoCredito = cartaoCredito;
+	}
+	
 }
