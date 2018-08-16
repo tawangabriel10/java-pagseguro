@@ -93,6 +93,14 @@ public class CheckoutService {
                         .addInclude(new PaymentMethodBuilder()
                             .withGroup(PaymentMethodGroup.BANK_SLIP)
                         )
+                        .addInclude(new PaymentMethodBuilder()
+                            .withGroup(PaymentMethodGroup.CREDIT_CARD)
+                        )
+                        .addInclude(new PaymentMethodBuilder()
+                            .withGroup(PaymentMethodGroup.DEPOSIT)
+                        )
+                        .addInclude(new PaymentMethodBuilder()
+                            .withGroup(PaymentMethodGroup.ONLINE_DEBIT))
                     )
 
                     //Para definir o percentual de desconto para um meio de pagamento você deverá utilizar três parâmetros: grupo de meios de pagamento, chave configuração de desconto e o percentual de desconto. No parâmetro de grupo você deve informar um dos meios de pagamento disponibilizados pelo PagSeguro. Após definir o grupo é necessário definir os a configuração dos campos chave e valor.

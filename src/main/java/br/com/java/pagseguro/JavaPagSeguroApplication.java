@@ -19,7 +19,7 @@ public class JavaPagSeguroApplication {
 		SpringApplication.run(JavaPagSeguroApplication.class, args);
 	}
 	
-	@Bean
+	/*@Bean
     CommandLineRunner lookup(CheckoutService service) {
         return args -> {
             
@@ -29,5 +29,5 @@ public class JavaPagSeguroApplication {
                 LOGGER.error(e.getMessage(), e);
             }
         };
-    }
+    }*/
 }

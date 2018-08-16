@@ -26,7 +26,7 @@ public class ResourceExceptionHandler {
                 .withTitulo("Erro ao realizar Transação")
                 .withStatus(500L)
                 .withData(new Date())
-                .withMensagemDesenvolvedor(exception.getMessage().concat(" ##### ").concat(request.getRequestURI()))
+                .withMensagemDesenvolvedor(exception.getMessage() + " ##### " + request.getRequestURI())
                 .build();
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
