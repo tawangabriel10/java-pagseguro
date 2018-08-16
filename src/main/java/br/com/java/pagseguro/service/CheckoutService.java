@@ -73,18 +73,7 @@ public class CheckoutService {
                             .withDistrict(pagamento.getRemessa().getEndereco().getDistrito())
                             .withNumber(pagamento.getRemessa().getEndereco().getNumero())
                             .withStreet(pagamento.getRemessa().getEndereco().getRua())));
-
-        	List<ProdutoDTO> produtos = pagamento.getProdutos();
-        	
-        	produtos.forEach(p -> {
-        		checkoutRegisterBuilder.addItem(new PaymentItemBuilder()
-                        .withId(p.getId().toString())
-                        .withDescription(p.getDescricao())
-                        .withAmount(p.getPreco())
-                        .withQuantity(p.getQuantidade())
-                        .withWeight(p.getPeso()));
-        	});
-                    
+   
 
                     //Para definir o a inclusão ou exclusão de um meio você deverá utilizar três parâmetros: o parâmetro que define a configuração do grupo,
                     // o grupo de meios de pagamento e o nome do meio de pagamento.
@@ -150,6 +139,18 @@ public class CheckoutService {
                             .withValue(new BigDecimal(5))
                         )
                     );
+        	
+
+        	List<ProdutoDTO> produtos = pagamento.getProdutos();
+        	
+        	produtos.forEach(p -> {
+        		checkoutRegisterBuilder.addItem(new PaymentItemBuilder()
+                        .withId(p.getId().toString())
+                        .withDescription(p.getDescricao())
+                        .withAmount(p.getPreco())
+                        .withQuantity(p.getQuantidade())
+                        .withWeight(p.getPeso()));
+        	});
                     
             RegisteredCheckout registeredCheckout = pagSeguro.checkouts().register(checkoutRegisterBuilder);
             System.out.println(registeredCheckout.getRedirectURL());
