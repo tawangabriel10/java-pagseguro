@@ -3,46 +3,39 @@ package br.com.java.pagseguro.service;
 import java.math.BigDecimal;
 import java.util.List;
 
-import br.com.java.pagseguro.util.exception.TransacaoAbortadaException;
+import br.com.java.pagseguro.exception.TransacaoAbortadaException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientException;
 
+import br.com.java.pagseguro.component.ProdutoComponent;
+import br.com.java.pagseguro.component.RemessaComponent;
+import br.com.java.pagseguro.component.RemetenteComponent;
 import br.com.java.pagseguro.domain.PagamentoDTO;
 import br.com.java.pagseguro.domain.ProdutoDTO;
-import br.com.java.pagseguro.domain.RemetenteDTO;
 import br.com.uol.pagseguro.api.PagSeguro;
-import br.com.uol.pagseguro.api.PagSeguroEnv;
 import br.com.uol.pagseguro.api.checkout.CheckoutRegistrationBuilder;
 import br.com.uol.pagseguro.api.checkout.RegisteredCheckout;
-import br.com.uol.pagseguro.api.common.domain.ShippingType;
 import br.com.uol.pagseguro.api.common.domain.builder.AcceptedPaymentMethodsBuilder;
-import br.com.uol.pagseguro.api.common.domain.builder.AddressBuilder;
 import br.com.uol.pagseguro.api.common.domain.builder.ConfigBuilder;
-import br.com.uol.pagseguro.api.common.domain.builder.PaymentItemBuilder;
 import br.com.uol.pagseguro.api.common.domain.builder.PaymentMethodBuilder;
 import br.com.uol.pagseguro.api.common.domain.builder.PaymentMethodConfigBuilder;
-import br.com.uol.pagseguro.api.common.domain.builder.PhoneBuilder;
-import br.com.uol.pagseguro.api.common.domain.builder.SenderBuilder;
-import br.com.uol.pagseguro.api.common.domain.builder.ShippingBuilder;
 import br.com.uol.pagseguro.api.common.domain.enums.ConfigKey;
-import br.com.uol.pagseguro.api.common.domain.enums.Currency;
 import br.com.uol.pagseguro.api.common.domain.enums.PaymentMethodGroup;
-import br.com.uol.pagseguro.api.common.domain.enums.PaymentMethodName;
-import br.com.uol.pagseguro.api.common.domain.enums.State;
-import br.com.uol.pagseguro.api.credential.Credential;
-import br.com.uol.pagseguro.api.http.JSEHttpClient;
-import br.com.uol.pagseguro.api.utils.logging.SimpleLoggerFactory;
 
 @Service
 public class CheckoutService {
 	
 	@Autowired
 	private PagSeguro pagSeguro;
+	
+	@Autowired
+	private RemetenteComponent remetenteComponent;
+	
+	@Autowired
+	private RemessaComponent remessaComponent;
+	
+	@Autowired
+	private ProdutoComponent produtoComponent;
 	
 	public void checkoutRegister(PagamentoDTO pagamento) throws TransacaoAbortadaException {
 
@@ -54,25 +47,10 @@ public class CheckoutService {
                     .withCurrency(pagamento.getMoeda())
                     .withExtraAmount(pagamento.getPrecoExtra())
                     .withReference(pagamento.getReferencia())
-                    .withSender(new SenderBuilder()
-                        .withEmail(pagamento.getRemetente().getEmail())
-                        .withName(pagamento.getRemetente().getNome())
-                        .withCPF(pagamento.getRemetente().getCpf())
-                        .withPhone(new PhoneBuilder()
-                            .withAreaCode(pagamento.getRemetente().getTelefone().getCodigoArea())
-                            .withNumber(pagamento.getRemetente().getTelefone().getNumero())))
-                    .withShipping(new ShippingBuilder()
-                        .withType(pagamento.getRemessa().getTipo())
-                        .withCost(pagamento.getRemessa().getCusto())
-                        .withAddress(new AddressBuilder()
-                            .withPostalCode(pagamento.getRemessa().getEndereco().getCodigoPostal())
-                            .withCountry(pagamento.getRemessa().getEndereco().getPais())
-                            .withState(pagamento.getRemessa().getEndereco().getEstado())
-                            .withCity(pagamento.getRemessa().getEndereco().getCidade())
-                            .withComplement(pagamento.getRemessa().getEndereco().getComplemento())
-                            .withDistrict(pagamento.getRemessa().getEndereco().getDistrito())
-                            .withNumber(pagamento.getRemessa().getEndereco().getNumero())
-                            .withStreet(pagamento.getRemessa().getEndereco().getRua())));
+                    .withSender(
+                    		remetenteComponent.toSenderBuilder(pagamento.getRemetente()))
+                    .withShipping(
+                    		remessaComponent.toShippingBuilder(pagamento.getRemessa()));
    
 
                     //Para definir o a inclusão ou exclusão de um meio você deverá utilizar três parâmetros: o parâmetro que define a configuração do grupo,
@@ -152,18 +130,14 @@ public class CheckoutService {
         	List<ProdutoDTO> produtos = pagamento.getProdutos();
         	
         	produtos.forEach(p -> {
-        		checkoutRegisterBuilder.addItem(new PaymentItemBuilder()
-                        .withId(p.getId().toString())
-                        .withDescription(p.getDescricao())
-                        .withAmount(p.getPreco())
-                        .withQuantity(p.getQuantidade())
-                        .withWeight(p.getPeso()));
+        		checkoutRegisterBuilder.addItem(
+        				produtoComponent.toPaymentItemBuilder(p));
         	});
                     
             RegisteredCheckout registeredCheckout = pagSeguro.checkouts().register(checkoutRegisterBuilder);
             System.out.println(registeredCheckout.getRedirectURL());
 
-        }catch (Exception e){
+        } catch (Exception e){
             e.printStackTrace();
             throw new TransacaoAbortadaException(e.getMessage(), e.getCause());
         }

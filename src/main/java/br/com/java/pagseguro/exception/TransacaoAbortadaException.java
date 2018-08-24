@@ -1,4 +1,4 @@
-package br.com.java.pagseguro.util.exception;
+package br.com.java.pagseguro.exception;
 
 /**
  * Created by tawan on 11/08/18.
