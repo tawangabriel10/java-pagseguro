@@ -1,5 +1,7 @@
 package br.com.java.pagseguro.service;
 
+import br.com.java.pagseguro.component.PreAprovadoComponent;
+import br.com.java.pagseguro.domain.PreAprovadoDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +24,7 @@ public class PreAprovadoService {
 	private PagSeguro pagSeguro;
 	
 	@Autowired
-	private PagamentoComponent pagamentoComponent;
+	private PreAprovadoComponent preAprovadoComponent;
 	
 	/**
 	 * 
@@ -30,38 +32,38 @@ public class PreAprovadoService {
 	 * @throws TransacaoAbortadaException
 	 */
 	public DataList buscarPreAprovados() throws TransacaoAbortadaException {
-	    try{
-	        DataList dataList = pagSeguro.preApprovals().search().byDateRange(
-	            new DateRangeBuilder().between(
-	                DatatypeConverter.parseDateTime("2016-10-01T00:00:00.000-03:00").getTime(),
-	                DatatypeConverter.parseDateTime("2016-10-03T15:56:00.000-03:00").getTime()),
-	            1,
-	            10
-	        );
-	        System.out.println(dataList);
-	        return dataList;
-	      }catch (Exception e){
-	        e.printStackTrace();
-	        throw new TransacaoAbortadaException(e.getMessage(), e.getCause());
-	      }
+		try{
+			DataList dataList = pagSeguro.preApprovals().search().byDateRange(
+					new DateRangeBuilder().between(
+							DatatypeConverter.parseDateTime("2016-10-01T00:00:00.000-03:00").getTime(),
+							DatatypeConverter.parseDateTime("2016-10-03T15:56:00.000-03:00").getTime()),
+					1,
+					10
+			);
+			System.out.println(dataList);
+			return dataList;
+		}catch (Exception e){
+			e.printStackTrace();
+			throw new TransacaoAbortadaException(e.getMessage(), e.getCause());
+		}
 	}
 	
 	/**
 	 * 
-	 * @param pagamento
+	 * @param preAprovado
 	 */
-	public void criarPreAprovado(PagamentoDTO pagamento) throws TransacaoAbortadaException {
+	public void criarPreAprovado(PreAprovadoDTO preAprovado) throws TransacaoAbortadaException {
 
 		try {
 			//Assinatura
 			RegisteredPreApproval registeredPreApproval = pagSeguro.preApprovals().register(
-	    		  pagamentoComponent.getPreApprovalRegistrationBuilder(pagamento));
+					preAprovadoComponent.toPreApprovalRegistrationBuilder(preAprovado));
 			
 			System.out.println(registeredPreApproval.getRedirectURL());
-	    } catch (Exception e){
-	      e.printStackTrace();
-	      throw new TransacaoAbortadaException(e.getMessage(), e.getCause());
-	    }
+		} catch (Exception e){
+			e.printStackTrace();
+			throw new TransacaoAbortadaException(e.getMessage(), e.getCause());
+		}
 	}
 	
 /**
@@ -69,18 +71,18 @@ public class PreAprovadoService {
  * @param codigo
  * @throws TransacaoAbortadaException
  */
-	public void cancelarPreAprovado(String codigo) throws TransacaoAbortadaException {
-		   try{
+public void cancelarPreAprovado(String codigo) throws TransacaoAbortadaException {
+	try{
 
-			   //Cancelamento de assinaturas
-			   CancelledPreApproval cancelledPreApproval = pagSeguro.preApprovals().cancel(
-					   new PreApprovalCancellationBuilder().withCode("F50E50A8B5B5743AA4E67F8D78D11A62"));
-			   System.out.println(cancelledPreApproval.getTransactionStatus());
+		//Cancelamento de assinaturas
+		CancelledPreApproval cancelledPreApproval = pagSeguro.preApprovals().cancel(
+				new PreApprovalCancellationBuilder().withCode("F50E50A8B5B5743AA4E67F8D78D11A62"));
+		System.out.println(cancelledPreApproval.getTransactionStatus());
 
-		   } catch (Exception e){
-			   e.printStackTrace();
-			   throw new TransacaoAbortadaException(e.getMessage(), e.getCause());
-		   }
+	} catch (Exception e){
+		e.printStackTrace();
+		throw new TransacaoAbortadaException(e.getMessage(), e.getCause());
 	}
-	
+}
+
 }

@@ -20,22 +20,22 @@ public class ParcelamentoService {
 	
 	public List<InstallmentDetail> getOpcoesParcelamento() {
 		List<InstallmentDetail> listaOpcoes = new ArrayList<>();
-	    try{
+		try{
 
-	        //Lista as opções de parcelamento
-	        DataList<? extends InstallmentDetail> installmentDetails =
-	            pagSeguro.installments().list(new InstallmentListingBuilder()
-	                .withCardBrand("visa")
-	                .withAmount(new BigDecimal(271.00))
-	                .withMaxInstallmentNoInterest(5)
-	            );
+			//Lista as opções de parcelamento
+			DataList<? extends InstallmentDetail> installmentDetails =
+					pagSeguro.installments().list(new InstallmentListingBuilder()
+							.withCardBrand("visa")
+							.withAmount(new BigDecimal(271.00))
+							.withMaxInstallmentNoInterest(5)
+					);
 
-	        System.out.println(installmentDetails.getData());
-	        listaOpcoes = (List<InstallmentDetail>) installmentDetails.getData();
-	      }catch (Exception e){
-	        e.printStackTrace();
-	      }
-	    return listaOpcoes;
+			System.out.println(installmentDetails.getData());
+			listaOpcoes = (List<InstallmentDetail>) installmentDetails.getData();
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return listaOpcoes;
 	}
 
 }

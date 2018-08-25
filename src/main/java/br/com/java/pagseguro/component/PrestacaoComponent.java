@@ -10,7 +10,7 @@ public class PrestacaoComponent {
 
 	public InstallmentBuilder toInstallmentBuilder(PrestacaoDTO prestacao) {
 		return new InstallmentBuilder()
-                .withQuantity(prestacao.getQuantidade())
-                .withValue(prestacao.getValor());
+				.withQuantity(prestacao.getQuantidade())
+				.withValue(prestacao.getValor());
 	}
 }

@@ -10,7 +10,7 @@ public class DocumentoTitularComponent {
 
 	public DocumentBuilder toDocumentBuilder(DocumentoTitularDTO documento) {
 		return new DocumentBuilder()
-                .withType(documento.getTipo())
-                .withValue(documento.getValor());
+				.withType(documento.getTipo())
+				.withValue(documento.getValor());
 	}
 }

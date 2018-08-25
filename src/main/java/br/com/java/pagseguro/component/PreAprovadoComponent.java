@@ -29,7 +29,7 @@ public class PreAprovadoComponent {
 	            		  remessaComponent.toShippingBuilder(preAprovado.getRemessa()))
 	              .withPreApproval(
 	            		  requisicaoPreAprovadoComponent.toPreApprovalRequestBuilder(preAprovado.getRequisicao()))
-	              .withRedirectURL("http://loja.teste.com/redirect")
-	              .withNotificationURL("http://loja.teste.com/notification");
+	              .withRedirectURL(preAprovado.getRedirecionaURL())
+	              .withNotificationURL(preAprovado.getNotificacaoRL());
 	 }
 }

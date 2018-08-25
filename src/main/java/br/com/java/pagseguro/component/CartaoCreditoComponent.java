@@ -20,12 +20,12 @@ public class CartaoCreditoComponent {
 
 	public CreditCardBuilder toCreditCardBuilder(CartaoCreditoDTO cartaoCredito) {
 		return new CreditCardBuilder()
-                .withBillingAddress(
-                		enderecoComponent.toAddressBuilder(cartaoCredito.getEnderecoCobranca()))
-                    .withInstallment(
-                    		prestacaoComponent.toInstallmentBuilder(cartaoCredito.getPrestacao()))
-                    .withHolder(
-                    		titularComponent.toHolderBuilder(cartaoCredito.getTitular()))
-                    .withToken("token");
+				.withBillingAddress(
+						enderecoComponent.toAddressBuilder(cartaoCredito.getEnderecoCobranca()))
+				.withInstallment(
+						prestacaoComponent.toInstallmentBuilder(cartaoCredito.getPrestacao()))
+				.withHolder(
+						titularComponent.toHolderBuilder(cartaoCredito.getTitular()))
+				.withToken("token");
 	}
 }

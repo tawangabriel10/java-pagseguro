@@ -22,11 +22,11 @@ public class TitularComponent {
 
 	public HolderBuilder toHolderBuilder(TitularDTO titular) {
 		 
-		 HolderBuilder holder;
-			holder = new HolderBuilder()
-					 .withName(titular.getNome())
-					 .withPhone(
-							 telefoneComponent.toPhoneBuilder(titular.getTelefone()));
+		HolderBuilder holder;
+		holder = new HolderBuilder()
+				.withName(titular.getNome())
+				.withPhone(
+						telefoneComponent.toPhoneBuilder(titular.getTelefone()));
 		try {
 			holder.withBithDate(new SimpleDateFormat("dd/MM/yyyy").parse(titular.getDataAniversario().toString()));
 		} catch (ParseException e) {
@@ -34,12 +34,12 @@ public class TitularComponent {
 			e.printStackTrace();
 		}
          
-		 List<DocumentoTitularDTO> documentos = titular.getDocumentos();
-         documentos.forEach(d -> {
-        	 holder.addDocument(
-        			 documentoTitularComponent.toDocumentBuilder(d));
-         });
+		List<DocumentoTitularDTO> documentos = titular.getDocumentos();
+		documentos.forEach(d -> {
+			holder.addDocument(
+					documentoTitularComponent.toDocumentBuilder(d));
+		});
          
-         return holder;
+		return holder;
 	}
 }

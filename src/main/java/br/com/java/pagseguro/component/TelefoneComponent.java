@@ -10,7 +10,7 @@ public class TelefoneComponent {
 	
 	public PhoneBuilder toPhoneBuilder(TelefoneDTO telefone) {
 		return new PhoneBuilder()
-                .withAreaCode(telefone.getCodigoArea())
-                .withNumber(telefone.getNumero());
+				.withAreaCode(telefone.getCodigoArea())
+				.withNumber(telefone.getNumero());
 	}
 }
