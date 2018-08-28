@@ -69,7 +69,7 @@
 				<artifactId>docker-maven-plugin</artifactId>
 				<version>0.4.13</version>
 				<configuration>
-					<imageName>app-pagseguro</imageName>
+					<imageName>java-pagseguro</imageName>
 					<baseImage>frolvlad/alpine-oraclejdk8:slim</baseImage>
 					<entryPoint>["sh", "-c", "java -Djava.security.egd=file:/dev/./urandom -jar /${project.build.finalName}.jar --spring.profiles.active=${spring.profile}"]
 					</entryPoint>

@@ -25,7 +25,7 @@ mvn clean install spring-boot:run
 ### Lista de endpoints cadastrados:
 
 - Registrar Checkout simples de pagamento no Pagseguro, caso sucesso é retornado uma URL de redirecionamento:
-```
+```sh
 POST http://localhost:8080/checkout/register
 ```
 - JSON de exemplo para a requisição:
@@ -164,3 +164,14 @@ POST http://localhost:8080/checkout/transparente/debito-online
 - JSON de exemplo para a requisição:
 
 
+
+### Comando Maven para gerar imagem Docker atualizando a versão dos artefatos:
+```sh
+mvn clean package docker:build --batch-mode release:update-versions
+```
+```sh
+cd target/docker
+```
+```sh
+docker run -it -p 8080:8080 --name java-pagseguro-container java-pagseguro 
+```
