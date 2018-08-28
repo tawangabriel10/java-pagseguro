@@ -33,49 +33,62 @@ public class CheckoutTransparenteService {
     
     @Autowired
     private CartaoCreditoComponent cartaoCreditoComponent;
+
     /**
      * 
      * @param dataInicial
      * @param dataFinal
+     * @return
+     * @throws TransacaoAbortadaException
      */
-    public void buscarTransacoesPorDatas(Date dataInicial, Date dataFinal) {
+    public DataList<? extends TransactionSummary> buscarTransacoesPorDatas(Date dataInicial, Date dataFinal) throws TransacaoAbortadaException {
         try {
     		
             final int pagina = 1;
             final int maxResultados = 10;
     	      
-            final DataList<? extends TransactionSummary> transactions =
+            final DataList<? extends TransactionSummary> transacoes =
                     pagSeguro.transactions().search().byDateRange(
                             new DateRangeBuilder().between(dataInicial, dataFinal), pagina, maxResultados);
-            System.out.println(transactions.size());
-        }catch (Exception e){
+            System.out.println(transacoes.size());
+            return transacoes;
+        }catch (Exception e) {
             e.printStackTrace();
+            throw new TransacaoAbortadaException(e.getMessage(), e.getCause());
         }
     }
     
     /**
      * 
      * @param codigoTransacao
+     * @return
+     * @throws TransacaoAbortadaException
      */
-    public void buscarTransacaoPorCodigo(String codigoTransacao) {
+    public TransactionDetail buscarTransacaoPorCodigo(String codigoTransacao) throws TransacaoAbortadaException {
         try {
             TransactionDetail transaction = pagSeguro.transactions().search().byCode(codigoTransacao);
             System.out.println(transaction);
+            return transaction;
         }catch (Exception e){
             e.printStackTrace();
+            throw new TransacaoAbortadaException(e.getMessage(), e.getCause());
         }
     }
     
     /**
      * 
      * @param codigoNotificacao
+     * @return
+     * @throws TransacaoAbortadaException
      */
-    public void buscarTransacaoPorCodigoNotificacao(String codigoNotificacao) {
+    public TransactionDetail buscarTransacaoPorCodigoNotificacao(String codigoNotificacao) throws TransacaoAbortadaException {
         try {
             TransactionDetail transaction = pagSeguro.transactions().search().byNotificationCode(codigoNotificacao);
             System.out.println(transaction);
+            return transaction;
         }catch (Exception e){
             e.printStackTrace();
+            throw new TransacaoAbortadaException(e.getMessage(), e.getCause());
         }
     }
 
