@@ -18,14 +18,14 @@ Exemplo de aplicação REST com integração com PagSeguro.
 ### Build/Start do sistema
 
 ```
-mv clean install spring-boot:run
+mvn clean install spring-boot:run
 ```
 
 
 ### Lista de endpoints cadastrados:
 
 - Registrar Checkout simples de pagamento no Pagseguro, caso sucesso é retornado uma URL de redirecionamento:
-```sh
+```
 POST http://localhost:8080/checkout/register
 ```
 - JSON de exemplo para a requisição:
