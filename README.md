@@ -29,11 +29,7 @@ mv clean install spring-boot:run
 POST http://localhost:8080/checkout/register
 ```
 - JSON de exemplo para a requisição:
-```sh
-{
-  
-}
-```
+
 
 
 - Registrar Checkout transparente por meio de boleto bancario, caso sucesso é retornado uma URL de redirecionamento:
@@ -166,9 +162,5 @@ POST http://localhost:8080/checkout/transparente/cartao-credito
 POST http://localhost:8080/checkout/transparente/debito-online
 ```
 - JSON de exemplo para a requisição:
-```sh
-{
-  
-}
-```
+
 
